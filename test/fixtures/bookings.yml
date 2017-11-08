@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  arrival: 2017-10-03 17:08:21
+  departure: 2017-10-03 17:08:21
+  price: 
+  discount: 
+  status: 
+  adults: 
+  childrens: 
+  client: one
+  place: one
+
+two:
+  arrival: 2017-10-03 17:08:21
+  departure: 2017-10-03 17:08:21
+  price: 
+  discount: 
+  status: 
+  adults: 
+  childrens: 
+  client: two
+  place: two

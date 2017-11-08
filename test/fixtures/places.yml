@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  ptype: one
+  capacity: 
+  price: 
+  opening: 2017-10-03 17:05:53
+  closing: 2017-10-03 17:05:53
+
+two:
+  name: MyString
+  ptype: two
+  capacity: 
+  price: 
+  opening: 2017-10-03 17:05:53
+  closing: 2017-10-03 17:05:53

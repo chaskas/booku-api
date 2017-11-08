@@ -29,5 +29,23 @@ module BookuApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Rack-Cors
+    config.middleware.use Rack::Cors do
+      allow do
+        origins '*'
+        resource '*',
+          :headers => :any,
+          :expose  => ['access-token', 'expiry', 'token-type', 'uid', 'client'],
+          :methods => [:get, :post, :options, :delete, :put]
+      end
+    end
+
+    config.i18n.default_locale = :es
+
+    config.time_zone = 'Santiago'
+    config.active_record.default_timezone = :local
+    config.active_record.time_zone_aware_types = [:datetime, :time]
+
   end
 end
