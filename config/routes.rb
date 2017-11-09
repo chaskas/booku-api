@@ -15,4 +15,6 @@ Rails.application.routes.draw do
 
   post '/bookings/agenda/monthly', to: 'bookings#get_bookings_by_day_and_ptype', defaults: { format: :json }
 
+  post '/statuses/by/ids', to: 'statuses#get_statuses_by_ids', defaults: { format: :json }
+
 end

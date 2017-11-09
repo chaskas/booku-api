@@ -3,7 +3,7 @@ class PlacesController < ApplicationController
 
   # GET /places
   def index
-    @places = Place.all
+    @places = Place.order('display_order ASC')
 
     render json: @places, include: :ptype
   end
@@ -11,7 +11,7 @@ class PlacesController < ApplicationController
   # GET /places/ptype/1
   def get_places_by_ptype
 
-    @places = Place.where(ptype_id: params[:ptype]).order('name ASC')
+    @places = Place.where(ptype_id: params[:ptype]).order('display_order ASC')
     render json: @places
 
   end

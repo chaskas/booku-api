@@ -16,7 +16,7 @@ class BookingsController < ApplicationController
   # POST /bookings/agenda/monthly
   def get_bookings_by_day_and_ptype
 
-    places = Place.where(ptype_id: params[:ptype]).order('name ASC')
+    places = Place.where(ptype_id: params[:ptype]).order('display_order ASC')
 
     ini = params[:day].to_datetime
     fin = params[:day].to_datetime + params[:ndays].to_i.days

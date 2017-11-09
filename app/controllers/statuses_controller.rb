@@ -3,7 +3,14 @@ class StatusesController < ApplicationController
 
   # GET /statuses
   def index
-    @statuses = Status.all
+    @statuses = Status.order(:name)
+
+    render json: @statuses
+  end
+
+  # POST /statuses/by/ids
+  def get_statuses_by_ids
+    @statuses = Status.find(params[:status_ids])
 
     render json: @statuses
   end
