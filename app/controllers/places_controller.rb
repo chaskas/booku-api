@@ -3,7 +3,7 @@ class PlacesController < ApplicationController
 
   # GET /places
   def index
-    @places = Place.includes(:ptype).order(display_order: :asc).order('ptypes.name').order(name: :asc)
+    @places = Place.includes(:ptype).order('ptypes.name').order(display_order: :asc).order(name: :asc)
 
     render json: @places, include: :ptype
   end
