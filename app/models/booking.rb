@@ -6,8 +6,8 @@ class Booking < ApplicationRecord
   belongs_to :place
   belongs_to :user
 
-  has_many :payments
-  has_many :statements
+  has_many :payments, dependent: :destroy
+  has_many :statements, dependent: :destroy
   has_many :statuses, through: :statements
 
   def as_json(options={})

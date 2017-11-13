@@ -17,4 +17,7 @@ Rails.application.routes.draw do
 
   post '/statuses/by/ids', to: 'statuses#get_statuses_by_ids', defaults: { format: :json }
 
+  get 'users', to: 'users#index', defaults: { format: :json }
+  get 'users/:id', to: 'users#show', defaults: { format: :json }
+
 end

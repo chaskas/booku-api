@@ -1,7 +1,10 @@
 class Place < ApplicationRecord
+  
   belongs_to :ptype
 
   before_save :set_order
+
+  has_many :bookings, dependent: :nullify
 
   private
     def set_order
