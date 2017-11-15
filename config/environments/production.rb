@@ -80,4 +80,11 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.action_mailer.delivery_method = :smtp
+
+  config.action_mailer.smtp_settings = { address: 'mail.ainahue.cl', port: 465, domain: 'ainahue.cl', user_name: 'reservas@ainahue.cl', password: 'Aina.20171114.', authentication: 'plain', enable_starttls_auto: true, openssl_verify_mode: 'none', ssl: true }
+
+  config.action_mailer.asset_host = 'http://api.reservas.ainahue.cl:3002'
+
 end

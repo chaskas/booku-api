@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style media="screen">
+      body {
+        margin: auto 0;
+        /*font-family: "Trebuchet MS", Helvetica, sans-serif;*/
+        font-family: "Open Sans","Lucida Grande","Lucida Sans Unicode",Arial,Helvetica,Verdana,sans-serif;
+        font-size: 13px;
+      }
+      a {
+        color: #578423;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="center">
+          <div style="background-color: #f7f7f7; width: 640px;">
+            <br>
+            <%= image_tag('logo.png', alt: "Club Ainahue") %>
+            <div>
+              <p>
+                Estimado(a) <span style="font-weight: bold"><%= @booking.client.first_name + " " + @booking.client.last_name %></span>:
+              </p>
+              <p>Hemos recibido tu pago.</p>
+              <p style="font-size: 22px;">
+                Se ha confirmado tu reserva <br> en Club Ainahue.
+              </p>
+              <table width="80%" style="background-color: #FFFFFF; border: 1px #ccc solid;">
+                <tr>
+                  <td>Lugar:</td>
+                  <td><%= @booking.place.name %></td>
+                  <td>Capacidad:</td>
+                  <td><%= @booking.place.capacity %></td>
+                </tr>
+                <tr>
+                  <td>Día Llegada:</td>
+                  <td><%= I18n.localize(@booking.arrival, format: '%A %d/%m/%Y') %></td>
+                  <td>Hora Llegada:</td>
+                  <td><%= @booking.arrival.strftime('%H:%M') %></td>
+                </tr>
+                <tr>
+                  <td>Día Retiro:</td>
+                  <td><%= I18n.localize(@booking.departure, format: '%A %d/%m/%Y') %></td>
+                  <td>Hora Retiro:</td>
+                  <td><%= @booking.departure.strftime('%H:%M') %></td>
+                </tr>
+                <tr>
+                  <td>Total Días:</td>
+                  <td><%= @days %></td>
+                  <td>Total Noches:</td>
+                  <td><%= @nights %></td>
+                </tr>
+                <tr>
+                  <td>Adultos:</td>
+                  <td><%= @booking.adults %></td>
+                  <td>Niños:</td>
+                  <td><%= @booking.childrens %></td>
+                </tr>
+              </table>
+              <br>
+              <table width="80%" style="background-color: #FFFFFF; border: 1px #ccc solid;">
+                <tr>
+                  <td>Nombre:</td>
+                  <td><%= @booking.client.first_name + " " + @booking.client.last_name %></td>
+                  <td>Rut:</td>
+                  <td><%= @booking.client.rut %></td>
+                </tr>
+                <tr>
+                  <td>Fono:</td>
+                  <td><%= @booking.client.phone %></td>
+                  <td>Email:</td>
+                  <td><%= @booking.client.email %></td>
+                </tr>
+                <tr>
+                  <td>Dirección:</td>
+                  <td><%= @booking.client.address %></td>
+                  <td>Ciudad:</td>
+                  <td><%= @booking.client.city %></td>
+                </tr>
+                <tr>
+                  <td>Adultos:</td>
+                  <td><%= @booking.adults %></td>
+                  <td>Niños:</td>
+                  <td><%= @booking.childrens %></td>
+                </tr>
+              </table>
+              <br>
+              <table width="80%" style="background-color: #FFFFFF; border: 1px #ccc solid;">
+                <tr>
+                  <td>Valor Cabaña:</td>
+                  <td align="right"><%= number_to_currency(@booking.place.price, unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                  <td width="5%"></td>
+                  <td>Subtotal:</td>
+                  <td align="right"><%= number_to_currency(@booking.subtotal, unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                </tr>
+                <tr>
+                  <td>Extensión Horaria:</td>
+                  <td align="right"><%= number_to_currency(@dsep, unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                  <td width="5%"></td>
+                  <td>% Descto:</td>
+                  <td align="right"><%= @booking.discount %>%</td>
+                </tr>
+                <tr>
+                  <td>Traslado:</td>
+                  <td align="right"><%= number_to_currency(0, unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                  <td width="5%"></td>
+                  <td>Descuento:</td>
+                  <td align="right"><%= number_to_currency((@booking.subtotal * @booking.discount / 100), unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                </tr>
+                <tr>
+                  <td>Persona Adic.:</td>
+                  <td align="right"><%= number_to_currency(@aditional_person, unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                  <td width="5%"></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </table>
+              <br>
+              <table width="80%" style="background-color: #FFFFFF; border: 1px #ccc solid;">
+                <tr>
+                  <td width="80%" align="right" style="font-weight: bold;">Total a Pagar:</td>
+                  <td align="right"><%= number_to_currency(@booking.total, unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                </tr>
+                <tr>
+                  <td width="80%" align="right" style="font-weight: bold;">Total Abonos:</td>
+                  <td align="right"><%= number_to_currency(@booking.payments.sum(:amount), unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                </tr><tr>
+                  <td width="80%" align="right" style="font-weight: bold;">Saldo Pendiente:</td>
+                  <td align="right"><%= number_to_currency(@booking.total - @booking.payments.sum(:amount), unit: "$", separator: ",", delimiter: ".", precision: 0, format: "%u %n") %></td>
+                </tr>
+              </table>
+              <br>
+              <p>Adjunto encontrará documento de reserva.</p>
+              <br>
+              <p>
+                <a href="https://www.facebook.com/Ainahueclubdecampo/" target="_blank">
+                  <%= image_tag('facebook-logo-button.png', alt: "Facebook") %>
+                </a>
+              </p>
+              <p>
+                <a href="http://www.ainahue.cl" target="_blank">
+                  www.ainahue.cl
+                </a>
+                <br>
+                <span style="font-size: 10px;">Anibal Pinto 215 Of. 409, Concepción / Avda. La Araucana 2202, Hualqui </span>
+                <br>
+                <span style="font-size: 10px;">+56 41 2247008 - +56 9 9884 0445</span>
+              </p>
+              <br>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td align="center"><div style="background-color: #FFFFFF; width='640px'; text-align='right';"><a href="http://www.wdev.cl" target="_blank" style="font-size: 9px;">Powered by wDEV</a></div></td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -53,3 +53,8 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rails-i18n'
+
+gem 'nokogiri'
+gem 'premailer-rails'
+
+gem 'sprockets-rails', :require => 'sprockets/railtie'

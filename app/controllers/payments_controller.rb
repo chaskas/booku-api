@@ -25,6 +25,12 @@ class PaymentsController < ApplicationController
     @payment = Payment.new(payment_params)
 
     if @payment.save
+
+      if @payment.booking.payments.count < 2
+        BookingMailer.booking_confirmation_client(@payment.booking).deliver_now
+        BookingMailer.booking_confirmation_business(@payment.booking).deliver_now
+      end
+
       render json: @payment, status: :created, location: @payment
     else
       render json: @payment.errors, status: :unprocessable_entity

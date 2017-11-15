@@ -16,6 +16,7 @@ class UsersController < ApplicationController
     render json: @user
   end
 
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -24,7 +25,7 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:id)
+      params.require(:user).permit(:id, :name, :email, :password, :password_confirmation)
     end
 
 end
