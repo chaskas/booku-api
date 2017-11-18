@@ -16,12 +16,20 @@ class BookingsController < ApplicationController
   # POST /bookings/agenda/monthly
   def get_bookings_by_day_and_ptype
 
-    places = Place.where(ptype_id: params[:ptype]).order('display_order ASC')
+    ptype = Ptype.find(params[:ptype])
+
+    places = Place.where(ptype_id: ptype.id).order('display_order ASC')
 
     ini = params[:day].to_datetime
     fin = params[:day].to_datetime + params[:ndays].to_i.days
+    if(ptype.schedule_type == 1)
+      fin = params[:day].to_datetime + params[:ndays].to_i.hours
+    end
 
     @matrix = Array.new((fin - ini).to_i)  { Array.new }
+    if(ptype.schedule_type == 1)
+      @matrix = Array.new(((fin.to_time - ini.to_time) / 3600))  { Array.new }
+    end
 
     date = ini
 
@@ -29,9 +37,8 @@ class BookingsController < ApplicationController
 
       places.each do |place|
 
-        booking = Booking.includes(:client).where('place_id' => place.id).where("arrival < :date AND departure > :date", { date: date }).take
+        booking = Booking.includes(:client).where('place_id' => place.id).where("arrival <= :date AND departure > :date", { date: date }).take
 
-        # insertar booking
         if booking
           fil.push({ id: place.id, booking: booking, client: booking.client, statuses: booking.statuses, payments: booking.payments })
         else
@@ -40,7 +47,11 @@ class BookingsController < ApplicationController
 
       end
 
-      date = date + 1.days
+      if(ptype.schedule_type == 1)
+        date = date + 1.hours
+      else
+        date = date + 1.days
+      end
 
     end
 
@@ -51,7 +62,7 @@ class BookingsController < ApplicationController
   def show
 
     respond_to do |format|
-      format.json { render json: @booking, include: [ :client, :place, :payments, :statuses, :user ] }
+      format.json { render json: @booking }
       format.pdf do
 
         days = ((@booking.departure.to_date.at_beginning_of_day - @booking.arrival.to_date.at_beginning_of_day)/1.day).to_i + 1

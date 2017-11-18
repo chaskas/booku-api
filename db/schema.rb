@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171108143513) do
+ActiveRecord::Schema.define(version: 20171116233317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,10 +64,8 @@ ActiveRecord::Schema.define(version: 20171108143513) do
     t.bigint "ptype_id"
     t.integer "capacity"
     t.integer "price"
-    t.datetime "closing"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "opening"
     t.integer "extra_night"
     t.integer "extra_passenger"
     t.integer "dsep"
@@ -80,6 +78,9 @@ ActiveRecord::Schema.define(version: 20171108143513) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "plural"
+    t.integer "schedule_type", default: 0
+    t.datetime "opening"
+    t.datetime "closing"
   end
 
   create_table "statements", force: :cascade do |t|

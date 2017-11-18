@@ -10,11 +10,6 @@ class Booking < ApplicationRecord
   has_many :statements, dependent: :destroy
   has_many :statuses, through: :statements
 
-  def as_json(options={})
-    options[:methods] = [:pending]
-    super
-  end
-
   def pending
     self.total - Payment.where(booking_id: self.id).sum(:amount)
   end

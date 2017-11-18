@@ -46,6 +46,6 @@ class PtypesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def ptype_params
-      params.require(:ptype).permit(:name, :plural)
+      params.require(:ptype).permit(:name, :plural, :schedule_type, :opening, :closing)
     end
 end
