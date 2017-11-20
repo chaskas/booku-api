@@ -65,9 +65,6 @@ class BookingsController < ApplicationController
       format.json { render json: @booking }
       format.pdf do
 
-        days = ((@booking.departure.to_date.at_beginning_of_day - @booking.arrival.to_date.at_beginning_of_day)/1.day).to_i + 1
-        nights = ((@booking.departure.to_date.at_beginning_of_day - @booking.arrival.to_date.at_beginning_of_day)/1.day).to_i
-
         pdf = Prawn::Document.new(:margin => [10,20,10,20])
 
         pdf.image "#{Rails.root}/public/logo.png", :width => 120, :position => :center
@@ -108,9 +105,9 @@ class BookingsController < ApplicationController
         pdf.stroke_horizontal_rule
         pdf.move_down 10
 
-        aditional_person = 0
+        aditional_person_value = 0
         if (@booking.adults.to_i + @booking.childrens.to_i) > @booking.place.capacity.to_i
-          aditional_person = @booking.place.extra_passenger
+          aditional_person_value = @booking.place.extra_passenger
         end
 
         dsep = 0
@@ -118,18 +115,47 @@ class BookingsController < ApplicationController
           dsep = @booking.place.dsep
         end
 
+        days = ((@booking.departure.to_date.at_beginning_of_day - @booking.arrival.to_date.at_beginning_of_day)/1.day).to_i + 1
+        nights = ((@booking.departure.to_date.at_beginning_of_day - @booking.arrival.to_date.at_beginning_of_day)/1.day).to_i
+
+        schedule_types = ['Noche','Hora']
+
+        total_days = ""
+        total_days_title = ""
+        total_nights = ""
+        total_nights_title = "<b>Total Noches:</b>"
+        extension_title = ""
+        extension = ""
+        transfer_title = ""
+        transfer = ""
+        aditional_person_title = ""
+        aditional_person = ""
+        if @booking.place.ptype.schedule_type == 0
+          total_days_title = "<b>Total Días:</b>"
+          total_days = "#{ days }"
+          total_nights_title = "<b>Total Noches:</b>"
+          extension_title = "<b>Extension:</b>"
+          extension = n_to_c(dsep)
+          transfer_title = "<b>Translado:</b>"
+          transfer = n_to_c(0)
+          aditional_person_title = "<b>Persona Adic.</b>"
+          aditional_person = n_to_c(aditional_person_value)
+        else
+          nights = ((@booking.departure.to_time - @booking.arrival.to_time)/3600).to_i
+        end
+
         pdf.table(
             [
               [ "<b>Día Llegada:</b>",   "#{I18n.localize(@booking.arrival, format: '%A %d/%m/%Y')}",    "<b>Hora Llegada:</b>",  "#{@booking.arrival.strftime('%H:%M')}"],
               [ "<b>Día Retiro:</b>",    "#{I18n.localize(@booking.departure, format: '%A %d/%m/%Y')}",  "<b>Hora Retiro:</b>",   "#{@booking.departure.strftime('%H:%M')}"],
-              [ "<b>Total Días:</b>",    "#{ days }",                                                    "<b>Adultos:</b>",       "#{@booking.adults}"],
-              [ "<b>Total Noches:</b>",  "#{ nights }",                                                  "<b>Niños:</b>",         "#{@booking.childrens}"],
+              [ total_days_title,    total_days,                                                    "<b>Adultos:</b>",       "#{@booking.adults}"],
+              [ total_nights_title,  "#{ nights }",                                                  "<b>Niños:</b>",         "#{@booking.childrens}"],
               [ "",                      "",                                                             "<b>Total Personas</b>", @booking.adults.to_i + @booking.childrens.to_i],
               [ "","","",""],
-              [ "<b>Valor Cabaña:</b>",  n_to_c(@booking.place.price),                                   "<b>Subtotal:</b>",      n_to_c(@booking.subtotal)],
-              [ "<b>Extension:</b>",      n_to_c(dsep),                                                     "<b>% Descto:</b>",      @booking.discount.to_s + " %"],
-              [ "<b>Translado:</b>",      n_to_c(0),                                                     "<b>Descuento:</b>",     n_to_c(@booking.subtotal * @booking.discount / 100)],
-              [ "<b>Persona Adic.</b>",   n_to_c(aditional_person),                                                     "",               ""],
+              [ "<b>Valor #{schedule_types[@booking.place.ptype.schedule_type]}:</b>",  n_to_c(@booking.place.price),                                   "<b>Subtotal:</b>",      n_to_c(@booking.subtotal)],
+              [ extension_title,      extension,                                                     "<b>% Descto:</b>",      @booking.discount.to_s + " %"],
+              [ transfer_title,      transfer,                                                     "<b>Descuento:</b>",     n_to_c(@booking.subtotal * @booking.discount / 100)],
+              [ aditional_person_title,   aditional_person,                                                     "",               ""],
               ["","","",""]
             ]
           ) do |t|
