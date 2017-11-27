@@ -326,7 +326,7 @@ class BookingsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def booking_params
-      params.require(:booking).permit(:arrival, :departure, :subtotal, :total, :discount, :adults, :childrens, :client_id, :place_id, :status_ids => [])
+      params.require(:booking).permit(:arrival, :departure, :subtotal, :total, :discount, :adults, :childrens, :notes, :client_id, :place_id, :status_ids => [])
     end
 
     # Set format to xml unless client requires a specific format
