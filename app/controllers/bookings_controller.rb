@@ -172,20 +172,20 @@ class BookingsController < ApplicationController
           end
 
           pdf.stroke_horizontal_rule
-          pdf.move_down 10
+          pdf.move_down 20
 
           pdf.table(
               [
-                [ "<b>Total a Pagar:</b>",   "<b>"+n_to_c(@booking.total)+"</b>"],
-                [ "<b>Total Abonos:</b>",    n_to_c(@booking.payments.sum(:amount))],
-                [ "<b>Saldo Pendiente:</b>", n_to_c(@booking.total.to_i - @booking.payments.sum(:amount).to_i )],
+                [ "<b>Total a Pagar:</b>",   { :content => "<b>"+n_to_c(@booking.total)+"</b>", :align => :right }, "", "<b>Observaciones:</b>"],
+                [ "<b>Total Abonos:</b>",    { :content => n_to_c(@booking.payments.sum(:amount)), :align => :right }, "", { :content => @booking.notes, :rowspan => 3 }],
+                [ "<b>Saldo Pendiente:</b>", { :content => n_to_c(@booking.total.to_i - @booking.payments.sum(:amount).to_i ), :align => :right }, ""],
               ]
             ) do |t|
-              t.width = 210
-              t.column_widths = [120,90]
+              t.width = 570
+              t.column_widths = [90,60,20, 400]
               t.cells.border_width = 0
-              t.cells.style(:height => 20, :inline_format => true, :align => :right )
-              t.position = :right
+              t.cells.style(:height => 20, :inline_format => true )
+              t.position = :left
               t.cells.border_width = 0
               t.before_rendering_page do |page|
                 page.row(0).border_top_width = 0
@@ -195,76 +195,77 @@ class BookingsController < ApplicationController
               end
             end
 
-            pdf.move_down 12
+            pdf.move_down 22
             pdf.stroke_horizontal_rule
 
 
-          # Detalle de Pagos
-          # methods = [ "Transferencia", "Efectivo", "WebPay", "Cheque" ]
-          # payments_rows = [["<b>Fecha</b>", "<b>Boleta / Factura</b>", "<b>Método de Pago</b>", "<b>Monto</b>"]]
-          # @booking.payments.each do |payment|
-          #   payments_rows.push([I18n.localize(payment.created_at, format: '%d/%m/%Y'), payment.bill, methods[payment.method], n_to_c(payment.amount)])
-          # end
-          #
-          # pdf.table(
-          #
-          #       payments_rows
-          #
-          #   ) do |t|
-          #     t.width = 540
-          #     t.column_widths = [90,180,90,180]
-          #     t.cells.border_width = 0
-          #     t.cells.style(:height => 20, :inline_format => true, :align => :right )
-          #     t.position = :right
-          #     t.cells.border_width = 0
-          #     t.before_rendering_page do |page|
-          #       page.row(0).border_top_width = 0
-          #       page.row(-1).border_bottom_width = 0
-          #       page.column(0).border_left_width = 0
-          #       page.column(-1).border_right_width = 0
-          #     end
-          #   end
-
-          pdf.move_down 100
-
-          pdf.table(
-              [
-                [ "______________________________",   "______________________________"],
-                [ "<b>#{@booking.client.first_name} #{@booking.client.last_name}</b>",   "<b>Club de Campo</b>"],
-                [ "<b>#{@booking.client.rut}</b>",   "<b>Ainahue</b>"],
-                [ "Recibo Conforme", "Recibo Conforme"]
-              ]
-            ) do |t|
-              t.width = 540
-              t.column_widths = [270, 270]
-              t.cells.border_width = 0
-              t.cells.style(:height => 15, :inline_format => true, :align => :center, :padding => [0, 0, 0, 5] )
-              t.position = :right
-              t.cells.border_width = 0
-              t.before_rendering_page do |page|
-                page.row(0).border_top_width = 0
-                page.row(-1).border_bottom_width = 0
-                page.column(0).border_left_width = 0
-                page.column(-1).border_right_width = 0
-              end
+          # # Detalle de Pagos
+          if @booking.payments.count > 0
+            methods = [ "Transferencia", "Efectivo", "WebPay", "Cheque" ]
+            payments_rows = [["<b>Fecha</b>", "<b>Boleta / Factura</b>", "<b>Método de Pago</b>", "<b>Monto</b>"]]
+            @booking.payments.each do |payment|
+              payments_rows.push([I18n.localize(payment.created_at, format: '%d/%m/%Y'), payment.bill, methods[payment.method], n_to_c(payment.amount)])
             end
 
-          pdf.move_down 55
+            pdf.table(
 
-          pdf.font_size 9
-          pdf.text "HORARIOS DE ATENCIÓN", :align => :center
-          pdf.text "Complejo Turístico: 10:00 a 19:00 Hrs.", :align => :center
-          pdf.text "Restaurante: 10:00 a 19:00 Hrs.", :align => :center
-          pdf.text "Administración: 10:00 a 19:00 Hrs", :align => :center
-          pdf.text "Piscina Temperada de Lunes a Viernes 15:00 a 19:00 Hrs.", :align => :center
-          pdf.text "Piscina Temperada de Sábado a Domingo 11:00 a 19:00 Hrs.", :align => :center
+                  payments_rows
 
-          pdf.move_down 10
-          pdf.font_size 7
-          pdf.text "NOTA: En caso de que requiera salir o entrar fuera del horario de funcionamiento del recinto, favor avisar a administración. NO SE PERMITE FIESTA EN LAS CABAÑAS", :align => :center
-          pdf.text "Anibal Pinto 215, Of. 409, Concepción - www.ainahue.cl - 2247008 - 98840445 - ainahue@ainahue.cl - Avda. La Araucana 2202, Hualqui.", :align => :center
-          pdf.text "NO SE ACEPTAN MASCOTAS - PISCINA TEMPERADA OBLIGATORIO USO DE GORRA", :align => :center
-          pdf.text "Los abonos no son reembolsables en caso de desistimiento.", :align => :center
+              ) do |t|
+                t.width = 570
+                t.column_widths = [135,145,145,145]
+                t.cells.border_width = 0
+                t.cells.style(:height => 20, :inline_format => true, :align => :center )
+                t.position = :center
+                t.cells.border_width = 0
+                t.before_rendering_page do |page|
+                  page.row(0).border_top_width = 0
+                  page.row(-1).border_bottom_width = 1
+                  page.column(0).border_left_width = 0
+                  page.column(-1).border_right_width = 0
+                end
+              end
+          end
+
+          pdf.float do
+            pdf.bounding_box([0, 150], :width => 570, :height => 150) do
+              pdf.table(
+                  [
+                    [ "______________________________",   "______________________________"],
+                    [ "<b>#{@booking.client.first_name} #{@booking.client.last_name}</b>",   "<b>Club de Campo</b>"],
+                    [ "<b>#{@booking.client.rut}</b>",   "<b>Ainahue</b>"],
+                    [ "Recibo Conforme", "Recibo Conforme"]
+                  ]
+                ) do |t|
+                  t.width = 540
+                  t.column_widths = [270, 270]
+                  t.cells.border_width = 0
+                  t.cells.style(:height => 15, :inline_format => true, :align => :center, :padding => [0, 0, 0, 5] )
+                  t.position = :center
+                  t.cells.border_width = 0
+                  t.before_rendering_page do |page|
+                    page.row(0).border_top_width = 0
+                    page.row(-1).border_bottom_width = 0
+                    page.column(0).border_left_width = 0
+                    page.column(-1).border_right_width = 0
+                  end
+                end
+
+              pdf.font_size 9
+              pdf.text "HORARIOS DE ATENCIÓN", :align => :center
+              pdf.text "Complejo Turístico: 09:00 a 20:00 Hrs.", :align => :center
+              pdf.text "Restaurante: 10:00 a 19:00 Hrs.", :align => :center
+              pdf.text "Administración: 10:00 a 19:00 Hrs", :align => :center
+              pdf.text "Horario Piscina Temperada de 11:00 a 14:00 y de 15:00 a 19:00 Hrs.", :align => :center
+
+              pdf.move_down 5
+              pdf.font_size 7
+              pdf.text "NOTA: En caso de que requiera salir o entrar fuera del horario de funcionamiento del recinto, favor avisar a administración. NO SE PERMITE FIESTA EN LAS CABAÑAS", :align => :center
+              pdf.text "Anibal Pinto 215, Of. 409, Concepción - www.ainahue.cl - 2247008 - 98840445 - ainahue@ainahue.cl - Avda. La Araucana 2202, Hualqui.", :align => :center
+              pdf.text "NO SE ACEPTAN MASCOTAS - PISCINA TEMPERADA OBLIGATORIO USO DE GORRA", :align => :center
+              pdf.text "Los abonos no son reembolsables en caso de desistimiento.", :align => :center
+            end
+          end
 
         send_data pdf.render,
           filename: "Reserva" + @booking.id.to_s + ".pdf",
