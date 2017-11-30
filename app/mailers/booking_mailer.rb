@@ -46,8 +46,8 @@ class BookingMailer < ApplicationMailer
 
     attachments['Reserva_' + I18n.localize(@booking.arrival, format: '%Y%m%d') + '_' + @booking.id.to_s + '.pdf'] = open(url_for :controller => 'bookings', :action => 'show', :id => @booking.id, :format => 'pdf').read
 
-    # mail(to:  %("Contacto Ainahue" <rodrigo@webdevel.cl>), subject: 'Nueva Reserva - Club de Campo Ainahue')
-    mail(to:  %("Contacto Ainahue" <contacto@ainahue.cl>), subject: 'Nueva Reserva - Club de Campo Ainahue')
+    mail(to:  %("Contacto Ainahue" <rodrigo@webdevel.cl>), subject: 'Nueva Reserva - Club de Campo Ainahue')
+    # mail(to:  %("Contacto Ainahue" <contacto@ainahue.cl>), subject: 'Nueva Reserva - Club de Campo Ainahue')
 
   end
 
